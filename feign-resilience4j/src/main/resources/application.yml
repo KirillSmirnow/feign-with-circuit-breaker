@@ -1,0 +1,22 @@
+spring.cloud.openfeign.circuitbreaker:
+  enabled: true
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      SlowServerFeignClientperformRequestint:
+        sliding-window-type: count_based
+        sliding-window-size: 10
+        minimum-number-of-calls: 10
+        failure-rate-threshold: 100
+        wait-duration-in-open-state: 10s
+        permitted-number-of-calls-in-half-open-state: 3
+  timelimiter:
+    instances:
+      SlowServerFeignClientperformRequestint:
+        timeout-duration: 3s
+        cancel-running-future: true
+  bulkhead:
+    instances:
+      SlowServerFeignClientperformRequestint:
+        max-concurrent-calls: 5

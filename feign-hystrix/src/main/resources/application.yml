@@ -1,0 +1,18 @@
+feign:
+  client:
+    config:
+      slow:
+        connect-timeout: 100
+        read-timeout: 1700
+  circuitbreaker.enabled: true
+
+hystrix:
+  command:
+    "SlowServerFeignClient#performRequest(int)":
+      execution.isolation:
+        strategy: SEMAPHORE
+        semaphore.maxConcurrentRequests: 5
+      circuitBreaker:
+        requestVolumeThreshold: 10
+        errorThresholdPercentage: 100
+        sleepWindowInMilliseconds: 10_000
