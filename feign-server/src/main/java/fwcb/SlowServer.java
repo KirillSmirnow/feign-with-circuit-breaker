@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
+import java.time.LocalDateTime;
 
 @Slf4j
 @SpringBootApplication
@@ -22,7 +23,15 @@ public class SlowServer {
 
     @RequestMapping(path = "/**", method = {RequestMethod.GET, RequestMethod.POST})
     @SneakyThrows
-    public String serve(@RequestParam(defaultValue = "0") int delayInSeconds) {
+    public String serve(@RequestParam(defaultValue = "-1") int delayInSeconds) {
+        if (delayInSeconds == -1) {
+            if (LocalDateTime.now().getMinute() % 2 == 0) {
+                delayInSeconds = 5;
+            } else {
+                delayInSeconds = 0;
+            }
+        }
+
         var start = System.currentTimeMillis();
         Thread.sleep(Duration.ofSeconds(delayInSeconds));
         var duration = Duration.ofMillis(System.currentTimeMillis() - start);
